@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+import warnings
 
 
 class GildedRose(object):
@@ -6,6 +6,14 @@ class GildedRose(object):
         self.items = items
 
     def update_item_quality(self, item):
+        """update_item_quality updates an items quality
+        and decrements it's sell_in value.
+
+        :param item: The item to update
+        :type item: Item
+        :return: The updated item
+        :rtype: Item
+        """
         # legendary items
         if item.name == "Sulfuras, Hand of Ragnaros":
             item.quality = 80
@@ -14,33 +22,29 @@ class GildedRose(object):
         item.sell_in -= 1
         item_name = item.name.lower().strip()
 
-        # items that increase in quality
-        if "aged brie" in item_name or "backstage" in item_name:
-            item.quality += 1
+        multiplier = -1  # default
 
-            if "backstage" in item_name:
-                if item.sell_in < 10:
-                    item.quality += 1
-
-                if item.sell_in < 5:
-                    item.quality += 1
-
-                if item.sell_in < 0:
-                    item.quality = 0
-            else:
-                if item.sell_in < 0:
-                    item.quality += 1
-
-        # items that derease in quality
-        else:
+        if "aged brie" in item_name:
             multiplier = 1
-            if "conjured" in item_name:
+
+        if "backstage" in item_name:
+            multiplier = 1
+            if item.sell_in < 0:
+                multiplier = -item.quality
+            elif item.sell_in < 5:
+                multiplier = 3
+            elif item.sell_in < 10:
                 multiplier = 2
 
-            item.quality -= multiplier
+        if "conjured" in item_name:
+            multiplier = -2
 
-            if item.sell_in < 0:
-                item.quality -= multiplier
+        # update quality
+        item.quality += multiplier
+
+        # double after 0
+        if item.sell_in < 0:
+            item.quality += multiplier
 
         # enforce bounds
         if item.quality > 50:
@@ -52,10 +56,18 @@ class GildedRose(object):
         return item
 
     def update_quality(self):
+        """update_quality Updates the quality of all the
+        items for sale at the Guilded Rose once a day.
+        """
         for i, item in enumerate(self.items):
             self.items[i] = self.update_item_quality(item)
 
     def update_quality_old(self):
+        warning = (
+            "\nThis only contains logic for backstage passes, legendary items, aged brie, and regular items.\n"
+            + "Please use the GildedRose().update_qualify method instead."
+        )
+        warnings.warn(warning, DeprecationWarning)
         for item in self.items:
             if (
                 item.name != "Aged Brie"
