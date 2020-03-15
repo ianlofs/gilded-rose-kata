@@ -10,17 +10,22 @@ from gilded_rose import Item, GildedRose
 def item_encoder(obj):
     return obj.__dict__
 
+
 @pytest.fixture
 def items(num_items):
     items = []
     for _ in range(num_items):
         rand_num = random.randint(0, 99)
         sell_in = random.randint(-25, 99)
-        quality = random.randint(-25, 99)
+        quality = random.randint(0, 50)
         if rand_num < 5:
-            item = Item(name="Sulfuras, Hand of Ragnaros", sell_in=sell_in, quality=quality,)
+            item = Item(name="Sulfuras, Hand of Ragnaros", sell_in=sell_in, quality=80,)
         elif rand_num < 20:
-            item = Item(name="Backstage passes to a TAFKAL80ETC concert", sell_in=sell_in, quality=quality,)
+            item = Item(
+                name="Backstage passes to a TAFKAL80ETC concert",
+                sell_in=sell_in,
+                quality=quality,
+            )
         elif rand_num < 50:
             item = Item(name="Conjured Mana Cake", sell_in=sell_in, quality=quality)
             if rand_num % 2 == 0:
