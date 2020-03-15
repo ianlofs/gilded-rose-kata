@@ -77,11 +77,6 @@ def items_with_new_logic(items_new, days):
     return items
 
 
-def test_update_quality_matches_old_logic(items_with_old_logic, items_with_new_logic):
-    for i, item in enumerate(items_with_new_logic):
-        assert items_with_old_logic[i] == item
-
-
 def test_update_item_default(gilded_rose):
     # normal conditions
     test_item = Item(name="+5 Dexterity Vest", sell_in=10, quality=10)
@@ -150,3 +145,8 @@ def test_legendary_item(gilded_rose):
     item = gilded_rose.update_item_quality(copy.deepcopy(test_item))
     assert test_item.sell_in == item.sell_in
     assert 80 == item.quality
+
+
+def test_update_quality_matches_old_logic(items_with_old_logic, items_with_new_logic):
+    for i, item in enumerate(items_with_new_logic):
+        assert items_with_old_logic[i] == item
