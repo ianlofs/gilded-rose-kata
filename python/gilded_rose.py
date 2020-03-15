@@ -33,10 +33,14 @@ class GildedRose(object):
 
         # items that derease in quality
         else:
-            item.quality -= 1
+            multiplier = 1
+            if "conjured" in item_name:
+                multiplier = 2
+
+            item.quality -= multiplier
 
             if item.sell_in < 0:
-                item.quality -= 1
+                item.quality -= multiplier
 
         # enforce bounds
         if item.quality > 50:
